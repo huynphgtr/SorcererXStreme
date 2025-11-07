@@ -4,11 +4,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import {
-  Sparkles,
-  Star,
-  Moon,
-  Hash,
+import { 
+  Sparkles, 
+  Star, 
+  Moon, 
+  Hash, 
   MessageCircle,
   TrendingUp,
   Calendar,
@@ -60,7 +60,7 @@ const tools = [
 const stats = [
   {
     label: 'Lượt sử dụng hôm nay',
-    value: '10',
+    value: '12',
     icon: TrendingUp,
     color: 'text-green-400'
   },
@@ -95,8 +95,8 @@ export default function DashboardPage() {
   return (
     <div className="flex h-screen bg-gray-950" style={{ fontFamily: 'Be Vietnam Pro, sans-serif' }}>
       <Sidebar />
-
-      <main className="flex-1 p-8 overflow-auto">
+      
+      <main className="flex-1 p-8 overflow-auto ml-64">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <motion.div
