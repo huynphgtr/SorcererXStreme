@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Crown, Check, Sparkles, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
+import { VIPTier } from '@/lib/vip-types';
 
 interface VIPUpgradePopupProps {
   isOpen: boolean;
   onClose: () => void;
   featureName?: string;
+  requiredTier?: VIPTier;
 }
 
 const vipBenefits = [
@@ -20,13 +22,20 @@ const vipBenefits = [
   { icon: Check, text: 'Lưu lịch sử không giới hạn' },
 ];
 
-export const VIPUpgradePopup = ({ isOpen, onClose, featureName = 'tính năng này' }: VIPUpgradePopupProps) => {
+export const VIPUpgradePopup = ({ 
+  isOpen, 
+  onClose, 
+  featureName = 'tính năng này',
+  requiredTier = VIPTier.VIP 
+}: VIPUpgradePopupProps) => {
   const router = useRouter();
 
   const handleUpgrade = () => {
     onClose();
     router.push('/vip/plans');
   };
+  
+  const isSorcererRequired = requiredTier === VIPTier.SORCERER;
 
   return (
     <AnimatePresence>
@@ -78,7 +87,7 @@ export const VIPUpgradePopup = ({ isOpen, onClose, featureName = 'tính năng n�
                 </motion.div>
 
                 <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-500 bg-clip-text text-transparent mb-2">
-                  Nâng cấp lên VIP
+                  Nâng cấp lên {isSorcererRequired ? 'Phù Thủy' : 'VIP'}
                 </h2>
                 <p className="text-center text-gray-300 text-lg">
                   Để truy cập <span className="text-yellow-400 font-semibold">{featureName}</span>

@@ -4,6 +4,7 @@ import { getAiResponse } from '../services/gemini.service';
 import { generateTarotPrompt } from '../services/tarot-prompts.service';
 import { addBreakupContextToPrompt, getComfortingMessage } from '../services/breakup-utils.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { VIPService } from '../services/vip.service';
 
 const prisma = new PrismaClient();
 
@@ -29,6 +30,9 @@ export async function getTarotReading(req: AuthRequest, res: Response): Promise<
       const comfortingMsg = getComfortingMessage('tarot');
       interpretation += `\n\n${comfortingMsg}`;
     }
+
+    // Increment usage counter
+    await VIPService.incrementUsage(userId, 'tarot');
 
     const reading = await prisma.tarotReading.create({
       data: {

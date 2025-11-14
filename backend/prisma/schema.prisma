@@ -18,10 +18,14 @@ model User {
   birthDate     DateTime?
   birthTime     String?
   createdAt     DateTime  @default(now())
+  vipTier       String    @default("FREE") // FREE, VIP, SORCERER
+  vipExpiresAt  DateTime?
   partner       Partner?
   breakups      Breakup[]
   chatMessages  ChatMessage[]
   tarotReadings TarotReading[]
+  subscriptions Subscription[]
+  usageStats    UsageStats?
 }
 
 model Partner {
@@ -64,4 +68,30 @@ model TarotReading {
   interpretation String
   createdAt     DateTime @default(now())
   user          User     @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id            String   @id @default(uuid())
+  userId        String
+  tier          String   // FREE, VIP, SORCERER
+  price         Int
+  startDate     DateTime @default(now())
+  endDate       DateTime
+  status        String   @default("active") // active, expired, cancelled
+  paymentMethod String?
+  transactionId String?
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model UsageStats {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  tarotReadingsToday  Int      @default(0)
+  chatMessagesToday   Int      @default(0)
+  astrologyToday      Int      @default(0)
+  fortuneToday        Int      @default(0)
+  numerologyToday     Int      @default(0)
+  lastResetDate       DateTime @default(now())
+  user                User     @relation(fields: [userId], references: [id])
 }

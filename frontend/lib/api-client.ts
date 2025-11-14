@@ -109,3 +109,30 @@ export const numerologyApi = {
       token,
     }),
 };
+
+export const subscriptionApi = {
+  getPlans: () =>
+    apiRequest('/api/subscription/plans'),
+
+  getCurrentSubscription: (token: string) =>
+    apiRequest('/api/subscription/current', { token }),
+
+  subscribe: (data: any, token: string) =>
+    apiRequest('/api/subscription/subscribe', {
+      method: 'POST',
+      body: data,
+      token,
+    }),
+
+  cancel: (token: string) =>
+    apiRequest('/api/subscription/cancel', {
+      method: 'POST',
+      token,
+    }),
+
+  getHistory: (token: string) =>
+    apiRequest('/api/subscription/history', { token }),
+
+  checkFeatureAccess: (feature: string, token: string) =>
+    apiRequest(`/api/subscription/check-access?feature=${feature}`, { token }),
+};

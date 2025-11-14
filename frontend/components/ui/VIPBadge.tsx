@@ -3,20 +3,52 @@
 import { motion } from 'framer-motion';
 import { Crown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { VIPTier } from '@/lib/vip-types';
 
 interface VIPBadgeProps {
+  tier?: VIPTier;
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   className?: string;
   animated?: boolean;
 }
 
+const TIER_CONFIG = {
+  [VIPTier.FREE]: {
+    gradient: 'from-gray-500 to-gray-600',
+    shadow: 'shadow-gray-500/30',
+    border: 'border-gray-400',
+    text: 'Free',
+    icon: '✨',
+    textColor: 'text-white'
+  },
+  [VIPTier.VIP]: {
+    gradient: 'from-yellow-400 via-yellow-500 to-amber-500',
+    shadow: 'shadow-yellow-500/50',
+    border: 'border-yellow-300',
+    text: 'VIP',
+    icon: '👑',
+    textColor: 'text-gray-900'
+  },
+  [VIPTier.SORCERER]: {
+    gradient: 'from-purple-500 via-pink-500 to-purple-600',
+    shadow: 'shadow-purple-500/50',
+    border: 'border-purple-300',
+    text: 'Phù Thủy',
+    icon: '🔮',
+    textColor: 'text-white'
+  }
+};
+
 export const VIPBadge = ({ 
+  tier = VIPTier.VIP,
   size = 'md', 
   showText = true, 
   className = '',
   animated = true 
 }: VIPBadgeProps) => {
+  const config = TIER_CONFIG[tier];
+  
   const sizeClasses = {
     sm: 'px-2 py-0.5 text-xs',
     md: 'px-3 py-1 text-sm',
@@ -33,15 +65,22 @@ export const VIPBadge = ({
     <div
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full font-bold",
-        "bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500",
-        "text-gray-900 shadow-lg shadow-yellow-500/50",
-        "border-2 border-yellow-300",
+        `bg-gradient-to-r ${config.gradient}`,
+        config.textColor,
+        `shadow-lg ${config.shadow}`,
+        `border-2 ${config.border}`,
         sizeClasses[size],
         className
       )}
     >
-      <Crown className={cn(iconSizes[size], "fill-yellow-600")} />
-      {showText && <span>VIP</span>}
+      {tier === VIPTier.SORCERER ? (
+        <span className="text-lg">{config.icon}</span>
+      ) : tier === VIPTier.FREE ? (
+        <Sparkles className={cn(iconSizes[size])} />
+      ) : (
+        <Crown className={cn(iconSizes[size], "fill-yellow-600")} />
+      )}
+      {showText && <span>{config.text}</span>}
     </div>
   );
 
