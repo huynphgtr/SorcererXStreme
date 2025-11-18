@@ -10,7 +10,10 @@ interface User {
   name?: string;
   birthDate?: string;
   birthTime?: string;
+  birthPlace?: string;
   isProfileComplete: boolean;
+  vipTier?: string;
+  vipExpiresAt?: string;
 }
 
 interface AuthState {
@@ -19,8 +22,8 @@ interface AuthState {
   token: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
-  completeProfile: (name: string, birthDate: string, birthTime: string, token: string) => Promise<void>;
-  updateProfile: (name: string, birthDate: string, birthTime: string, token: string) => Promise<void>;
+  completeProfile: (name: string, birthDate: string, birthTime: string, birthPlace: string, token: string) => Promise<void>;
+  updateProfile: (name: string, birthDate: string, birthTime: string, birthPlace: string, token: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -38,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
           console.log('login user:', user);
           
           document.cookie = `token=${token}; path=/; max-age=604800;`;
-          const isProfileComplete = !!(user.name && user.birthDate && user.birthTime);
+          const isProfileComplete = !!(user.name && user.birthDate && user.birthTime && user.birthPlace);
           console.log('isProfileComplete:', isProfileComplete);
           
           set({ user: { ...user, isProfileComplete }, isAuthenticated: true, token });
@@ -59,11 +62,11 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      completeProfile: async (name: string, birthDate: string, birthTime: string, token: string) => {
+      completeProfile: async (name: string, birthDate: string, birthTime: string, birthPlace: string, token: string) => {
         console.log('completeProfile called');
         if (token) {
           try {
-            const updatedUser = await profileApi.update({ name, birthDate, birthTime }, token);
+            const updatedUser = await profileApi.update({ name, birthDate, birthTime, birthPlace }, token);
             console.log('completeProfile updatedUser:', updatedUser);
             set({ user: { ...get().user, ...updatedUser, isProfileComplete: true } });
           } catch (error) {
@@ -72,10 +75,10 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      updateProfile: async (name: string, birthDate: string, birthTime: string, token: string) => {
+      updateProfile: async (name: string, birthDate: string, birthTime: string, birthPlace: string, token: string) => {
         if (token) {
           try {
-            const user = await profileApi.update({ name, birthDate, birthTime }, token);
+            const user = await profileApi.update({ name, birthDate, birthTime, birthPlace }, token);
             set({ user });
           } catch (error) {
             console.error(error);

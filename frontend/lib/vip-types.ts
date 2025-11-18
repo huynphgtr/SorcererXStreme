@@ -1,7 +1,6 @@
 export enum VIPTier {
   FREE = 'FREE',
-  VIP = 'VIP',
-  SORCERER = 'SORCERER'
+  VIP = 'VIP'
 }
 
 export interface VIPFeatureLimits {

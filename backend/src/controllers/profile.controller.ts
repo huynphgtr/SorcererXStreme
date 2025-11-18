@@ -12,7 +12,20 @@ export async function getProfile(req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ 
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        birthDate: true,
+        birthTime: true,
+        birthPlace: true,
+        vipTier: true,
+        vipExpiresAt: true,
+        createdAt: true
+      }
+    });
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -37,7 +50,19 @@ export async function updateProfile(req: AuthRequest, res: Response): Promise<vo
         name: data.name,
         birthDate: new Date(data.birthDate),
         birthTime: data.birthTime,
+        birthPlace: data.birthPlace,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        birthDate: true,
+        birthTime: true,
+        birthPlace: true,
+        vipTier: true,
+        vipExpiresAt: true,
+        createdAt: true
+      }
     });
 
     console.log('Updated user:', user);

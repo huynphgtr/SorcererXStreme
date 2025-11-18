@@ -60,7 +60,19 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
 
     const token = signJWT({ userId: user.id });
 
-    res.status(200).json({ token, user });
+    // Return user data with VIP info
+    const userData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      birthDate: user.birthDate,
+      birthTime: user.birthTime,
+      birthPlace: user.birthPlace,
+      vipTier: user.vipTier,
+      vipExpiresAt: user.vipExpiresAt
+    };
+
+    res.status(200).json({ token, user: userData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

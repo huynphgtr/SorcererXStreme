@@ -4,6 +4,7 @@ export interface User {
   name?: string;
   birthDate?: Date;
   birthTime?: string;
+  birthPlace?: string;
   createdAt: Date;
 }
 

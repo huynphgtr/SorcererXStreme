@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { User, Calendar, Clock } from 'lucide-react';
+import { User, Calendar, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/lib/store';
 import toast from 'react-hot-toast';
@@ -13,6 +13,7 @@ export default function CompleteProfilePage() {
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
+  const [birthPlace, setBirthPlace] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { user, completeProfile, isAuthenticated } = useAuthStore();
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function CompleteProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !birthDate || !birthTime) {
+    if (!name || !birthDate || !birthTime || !birthPlace) {
       toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
@@ -29,7 +30,7 @@ export default function CompleteProfilePage() {
     try {
       const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
       if (token) {
-        await completeProfile(name, birthDate, birthTime, token);
+        await completeProfile(name, birthDate, birthTime, birthPlace, token);
         toast.success('Hồ sơ đã được hoàn tất!');
         router.push('/dashboard');
       } else {
@@ -104,6 +105,18 @@ export default function CompleteProfilePage() {
                 value={birthTime}
                 onChange={(e) => setBirthTime(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-900/50 border border-gray-600/50 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all duration-200"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Nơi sinh"
+                value={birthPlace}
+                onChange={(e) => setBirthPlace(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-900/50 border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all duration-200"
                 disabled={isLoading}
               />
             </div>

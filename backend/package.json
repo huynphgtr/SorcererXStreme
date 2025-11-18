@@ -9,7 +9,9 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "upgrade-vip": "ts-node scripts/upgrade-to-vip.ts",
+    "check-user": "ts-node scripts/check-user.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

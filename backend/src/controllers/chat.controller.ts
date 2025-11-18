@@ -4,6 +4,7 @@ import { getAiResponse } from '../services/gemini.service';
 import { generateChatPrompt } from '../services/ai-prompts.service';
 import { addBreakupContextToPrompt, getComfortingMessage } from '../services/breakup-utils.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { VIPService } from '../services/vip.service';
 
 const prisma = new PrismaClient();
 
@@ -53,6 +54,9 @@ export async function sendMessage(req: AuthRequest, res: Response): Promise<void
         role: 'assistant',
       },
     });
+
+    // Increment usage counter
+    await VIPService.incrementUsage(userId, 'chat');
 
     res.status(200).json({ response: aiResponse });
   } catch (error) {

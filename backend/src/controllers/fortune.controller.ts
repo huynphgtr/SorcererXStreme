@@ -3,6 +3,7 @@ import { getAiResponse } from '../services/gemini.service';
 import { generateFortunePrompt } from '../services/ai-prompts.service';
 import { addBreakupContextToPrompt, getComfortingMessage } from '../services/breakup-utils.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { VIPService } from '../services/vip.service';
 
 export async function getFortune(req: AuthRequest, res: Response): Promise<void> {
   try {
@@ -32,9 +33,21 @@ export async function getFortune(req: AuthRequest, res: Response): Promise<void>
       analysis += `\n\n${comfortingMsg}`;
     }
 
+    // Increment usage counter (don't fail if this errors)
+    try {
+      await VIPService.incrementUsage(userId, 'fortune');
+    } catch (usageError) {
+      console.warn('Failed to increment usage counter:', usageError);
+      // Continue anyway - don't fail the request
+    }
+
     res.status(200).json({ analysis });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  } catch (error: any) {
+    console.error('❌ Fortune controller error:', error);
+    const errorMessage = error.message || 'Internal server error';
+    res.status(500).json({ 
+      message: errorMessage,
+      error: error.message 
+    });
   }
 }

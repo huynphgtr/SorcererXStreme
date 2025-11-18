@@ -114,72 +114,133 @@ export default function DashboardPage() {
           </motion.div>
 
           {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <div key={index} className="bg-gray-800/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg hover:shadow-red-500/10 transition-all duration-300">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="bg-gradient-to-br from-gray-800/60 to-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg hover:shadow-red-500/20 transition-all duration-300 cursor-pointer"
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-400 mb-1">{stat.label}</p>
-                      <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      <motion.p 
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+                        className="text-2xl font-bold text-white"
+                      >
+                        {stat.value}
+                      </motion.p>
                     </div>
-                    <Icon className={`w-8 h-8 ${stat.color}`} />
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+                    >
+                      <Icon className={`w-8 h-8 ${stat.color}`} />
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </motion.div>
+          </div>
 
           {/* Tools Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h2 className="text-xl font-bold text-white mb-6">Công cụ huyền thuật</h2>
+          <div>
+            <motion.h2 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl font-bold text-white mb-6"
+            >
+              Công cụ huyền thuật
+            </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tools.map((tool, index) => {
                 const Icon = tool.icon;
                 return (
                   <Link key={tool.href} href={tool.href}>
                     <motion.div
-                      whileHover={{ y: -4, scale: 1.02 }}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                      whileHover={{ y: -8, scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
-                      className="bg-gray-800/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg hover:shadow-red-500/20 cursor-pointer group transition-all duration-300"
+                      className="bg-gradient-to-br from-gray-800/70 to-gray-800/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg hover:shadow-red-500/30 cursor-pointer group transition-all duration-300 relative overflow-hidden"
                     >
-                      <div className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
+                      {/* Glow effect on hover */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent"
+                        initial={{ x: '-100%' }}
+                        whileHover={{ x: '100%' }}
+                        transition={{ duration: 0.6 }}
+                      />
+                      
+                      <motion.div 
+                        className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center mb-4 shadow-lg relative z-10`}
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
+                      >
                         <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white mb-2">{tool.name}</h3>
+                      </motion.div>
+                      <h3 className="text-lg font-bold text-white mb-2 group-hover:text-red-400 transition-colors">{tool.name}</h3>
                       <p className="text-gray-400 text-sm">{tool.description}</p>
                     </motion.div>
                   </Link>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
 
           {/* Recent Activity */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
             className="mt-8"
           >
-            <h2 className="text-xl font-bold text-white mb-6">Hoạt động gần đây</h2>
-            <div className="bg-gray-800/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg">
+            <motion.h2 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.1 }}
+              className="text-xl font-bold text-white mb-6"
+            >
+              Hoạt động gần đây
+            </motion.h2>
+            <motion.div 
+              whileHover={{ scale: 1.01 }}
+              className="bg-gradient-to-br from-gray-800/60 to-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 shadow-lg"
+            >
               <div className="text-center py-12">
-                <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">Chưa có hoạt động nào</p>
-                <p className="text-sm text-gray-500">Bắt đầu khám phá các công cụ huyền thuật để xem lịch sử tại đây</p>
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+                </motion.div>
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.3 }}
+                  className="text-gray-400 mb-2"
+                >
+                  Chưa có hoạt động nào
+                </motion.p>
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.4 }}
+                  className="text-sm text-gray-500"
+                >
+                  Bắt đầu khám phá các công cụ huyền thuật để xem lịch sử tại đây
+                </motion.p>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </main>

@@ -110,16 +110,6 @@ export const UsageLimitBanner = ({
               </Button>
             )}
 
-            {showUpgrade && isNearLimit && tier === VIPTier.VIP && (
-              <Button
-                onClick={() => router.push('/vip/plans')}
-                size="sm"
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold"
-              >
-                <span className="mr-1">🔮</span>
-                Nâng cấp Phù Thủy để không giới hạn
-              </Button>
-            )}
           </div>
         </div>
       </motion.div>

@@ -208,7 +208,7 @@ export default function TarotPage() {
     <div className="flex h-screen bg-gray-950" style={{ fontFamily: 'Be Vietnam Pro, sans-serif' }}>
       <Sidebar />
 
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto ml-64">
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -217,11 +217,31 @@ export default function TarotPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg">
+              <motion.div 
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.6, type: "spring" }}
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/50"
+              >
                 <Sparkles className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold text-white mb-2">Tarot Huyền Bí 3D</h1>
-              <p className="text-gray-400">Khám phá tương lai qua những lá bài thiêng liêng</p>
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-3xl font-bold text-white mb-2"
+              >
+                Tarot Huyền Bí 3D
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-400"
+              >
+                Khám phá tương lai qua những lá bài thiêng liêng
+              </motion.p>
             </motion.div>
 
             {/* Phase: Select Mode */}
@@ -229,12 +249,12 @@ export default function TarotPage() {
               <>
                 {/* Mode Selection */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.4, type: "spring" }}
                   className="flex justify-center mb-8"
                 >
-                  <div className="bg-gray-800/60 backdrop-blur-xl rounded-xl p-1 border border-gray-700/30">
+                  <div className="bg-gradient-to-r from-gray-800/60 via-gray-800/70 to-gray-800/60 backdrop-blur-xl rounded-xl p-1 border border-gray-700/30 shadow-lg">
                     <button
                       onClick={() => setMode('overview')}
                       className={`px-6 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer whitespace-nowrap ${mode === 'overview' ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
@@ -287,16 +307,20 @@ export default function TarotPage() {
 
                 {/* Start Reading Button */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.6, type: "spring" }}
                   className="text-center mb-8"
                 >
-                  <Button
-                    onClick={startReading}
-                    disabled={isAnimating}
-                    className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-lg font-medium whitespace-nowrap"
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
+                    <Button
+                      onClick={startReading}
+                      disabled={isAnimating}
+                      className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-lg font-medium whitespace-nowrap shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50"
+                    >
                     {isAnimating ? (
                       <>
                         <LoadingSpinner size="sm" className="mr-2" />
@@ -308,7 +332,8 @@ export default function TarotPage() {
                         Bắt đầu xem bài
                       </>
                     )}
-                  </Button>
+                    </Button>
+                  </motion.div>
                 </motion.div>
               </>
             )}

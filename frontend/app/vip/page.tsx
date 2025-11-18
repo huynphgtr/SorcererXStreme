@@ -21,12 +21,6 @@ const benefits = [
     color: 'from-purple-400 to-pink-500'
   },
   {
-    icon: Shield,
-    title: 'Ưu tiên hỗ trợ',
-    description: 'Được hỗ trợ ưu tiên 24/7 từ đội ngũ chuyên gia',
-    color: 'from-blue-400 to-cyan-500'
-  },
-  {
     icon: Star,
     title: 'Tính năng độc quyền',
     description: 'Truy cập các tính năng premium chỉ dành cho VIP',
@@ -37,26 +31,20 @@ const benefits = [
     title: 'Phân tích nâng cao',
     description: 'Biểu đồ và báo cáo chi tiết về vận mệnh',
     color: 'from-red-400 to-orange-500'
-  },
-  {
-    icon: Heart,
-    title: 'Không quảng cáo',
-    description: 'Trải nghiệm hoàn toàn không bị gián đoạn',
-    color: 'from-pink-400 to-rose-500'
   }
 ];
 
 const features = [
-  '✨ AI Chat không giới hạn',
-  '🎴 Xem Tarot Premium',
-  '⭐ Biểu đồ chiêm tinh 3D',
-  '🌙 Tử vi tổng quát hàng ngày',
-  '🔢 Phân tích thần số học sâu',
-  '📊 Lưu lịch sử không giới hạn',
-  '🎯 Dự đoán tương lai chính xác',
-  '💎 Nội dung độc quyền hàng tuần',
-  '🔮 Tư vấn huyền học cá nhân',
-  '🎁 Quà tặng đặc biệt mỗi tháng'
+  'AI Chat không giới hạn',
+  'Xem Tarot Premium',
+  'Biểu đồ chiêm tinh 3D',
+  'Tử vi tổng quát hàng ngày',
+  'Phân tích thần số học sâu',
+  'Lưu lịch sử không giới hạn',
+  'Dự đoán tương lai chính xác',
+  'Nội dung độc quyền hàng tuần',
+  'Tư vấn huyền học cá nhân',
+  'Quà tặng đặc biệt mỗi tháng'
 ];
 
 export default function VIPIntroPage() {
@@ -274,7 +262,7 @@ export default function VIPIntroPage() {
               Chọn gói VIP ngay
             </Button>
             <p className="text-gray-500 text-sm mt-6">
-              🎉 Ưu đãi đặc biệt: Giảm 30% cho tháng đầu tiên!
+              Ưu đãi đặc biệt: Giảm 30% cho tháng đầu tiên!
             </p>
           </div>
         </motion.section>

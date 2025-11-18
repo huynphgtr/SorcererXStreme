@@ -24,8 +24,6 @@ export const VIPFeatureLocked = ({
 }: VIPFeatureLockedProps) => {
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
 
-  const isSorcererRequired = requiredTier === VIPTier.SORCERER;
-
   return (
     <>
       <div className="relative">
@@ -40,11 +38,7 @@ export const VIPFeatureLocked = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`absolute inset-0 bg-gradient-to-br ${
-            isSorcererRequired 
-              ? 'from-purple-900/95 via-pink-900/95 to-purple-900/95'
-              : 'from-gray-900/95 via-gray-800/95 to-black/95'
-          } backdrop-blur-sm rounded-2xl flex items-center justify-center`}
+          className="absolute inset-0 bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-black/95 backdrop-blur-sm rounded-2xl flex items-center justify-center"
         >
           <div className="text-center p-8 max-w-md">
             {/* Lock Icon with Animation */}
@@ -52,23 +46,15 @@ export const VIPFeatureLocked = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", delay: 0.2 }}
-              className={`inline-flex items-center justify-center w-20 h-20 rounded-full ${
-                isSorcererRequired
-                  ? 'bg-gradient-to-br from-purple-500/20 to-pink-600/20 border-2 border-purple-500/30'
-                  : 'bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/30'
-              } mb-6 relative`}
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/30 mb-6 relative"
             >
-              <Lock className={`w-10 h-10 ${isSorcererRequired ? 'text-purple-400' : 'text-yellow-400'}`} />
+              <Lock className="w-10 h-10 text-yellow-400" />
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 className="absolute -top-2 -right-2"
               >
-                {isSorcererRequired ? (
-                  <span className="text-2xl">🔮</span>
-                ) : (
-                  <Crown className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-                )}
+                <Crown className="w-6 h-6 text-yellow-400 fill-yellow-400" />
               </motion.div>
             </motion.div>
 
@@ -79,7 +65,7 @@ export const VIPFeatureLocked = ({
               transition={{ delay: 0.3 }}
               className="text-2xl font-bold text-white mb-3"
             >
-              {isSorcererRequired ? 'Tính năng Phù Thủy' : 'Tính năng VIP'}
+              Tính năng VIP
             </motion.h3>
 
             {/* Feature Name */}
@@ -87,7 +73,7 @@ export const VIPFeatureLocked = ({
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className={`${isSorcererRequired ? 'text-purple-400' : 'text-yellow-400'} font-semibold mb-2`}
+              className="text-yellow-400 font-semibold mb-2"
             >
               {featureName}
             </motion.p>
@@ -112,23 +98,10 @@ export const VIPFeatureLocked = ({
             >
               <Button
                 onClick={() => setShowUpgradePopup(true)}
-                className={`${
-                  isSorcererRequired
-                    ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 hover:from-purple-600 hover:to-pink-700 border-purple-300'
-                    : 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 hover:from-yellow-500 hover:to-amber-600 border-yellow-300'
-                } text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-${isSorcererRequired ? 'purple' : 'yellow'}-500/30 border-2`}
+                className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 font-bold py-3 px-6 rounded-xl shadow-lg shadow-yellow-500/30 border-2 border-yellow-300"
               >
-                {isSorcererRequired ? (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Nâng cấp Phù Thủy
-                  </>
-                ) : (
-                  <>
-                    <Crown className="w-5 h-5 mr-2" />
-                    Nâng cấp VIP
-                  </>
-                )}
+                <Crown className="w-5 h-5 mr-2" />
+                Nâng cấp VIP
               </Button>
             </motion.div>
 
@@ -139,7 +112,7 @@ export const VIPFeatureLocked = ({
               transition={{ delay: 0.7 }}
               className="text-gray-500 text-xs mt-4"
             >
-              {isSorcererRequired ? '🔮 Không giới hạn + Ưu tiên tính năng mới' : '👑 Truy cập đầy đủ tính năng'}
+              👑 Không giới hạn + Đầy đủ tính năng
             </motion.p>
           </div>
         </motion.div>

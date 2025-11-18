@@ -49,7 +49,6 @@ const getZodiacSign = (dateString: string) => {
 
 const AstrologyPage = () => {
   const [mode, setMode] = useState<'general' | 'love' | 'staranalysis' | 'relations'>('general');
-  const [birthPlace, setBirthPlace] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState('');
   const [userZodiac, setUserZodiac] = useState<any>(null);
@@ -73,10 +72,7 @@ const AstrologyPage = () => {
       return;
     }
 
-    if (!birthPlace.trim()) {
-      toast.error('Vui lòng nhập nơi sinh của bạn');
-      return;
-    }
+    const birthPlace = user?.birthPlace || 'Việt Nam';
 
     setIsAnalyzing(true);
     setStarMapGenerated(false);
@@ -159,7 +155,6 @@ const AstrologyPage = () => {
   const resetAnalysis = () => {
     setAnalysis('');
     setUserZodiac(null);
-    setBirthPlace('');
     setMode('general');
     setShowRelationChart(false);
     setShowStarMap(false);
@@ -181,7 +176,7 @@ const AstrologyPage = () => {
 
       <Sidebar />
 
-      <main className="flex-1 overflow-auto relative z-10">
+      <main className="flex-1 overflow-auto relative z-10 ml-64">
         <div className="p-8">
           <div className="max-w-6xl mx-auto">
             <motion.div
@@ -189,20 +184,40 @@ const AstrologyPage = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-600 to-yellow-700 rounded-full flex items-center justify-center shadow-lg">
+              <motion.div 
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.6, type: "spring" }}
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-600 to-yellow-700 rounded-full flex items-center justify-center shadow-lg shadow-yellow-500/50"
+              >
                 <Star className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold text-white mb-2">Chiêm Tinh Học 3D</h1>
-              <p className="text-gray-400">Khám phá vận mệnh qua vị trí các vì sao với công nghệ 3D</p>
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-3xl font-bold text-white mb-2"
+              >
+                Chiêm Tinh Học 3D
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-400"
+              >
+                Khám phá vận mệnh qua vị trí các vì sao với công nghệ 3D
+              </motion.p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.4, type: "spring" }}
               className="flex justify-center mb-8"
             >
-              <div className="bg-gray-800/60 backdrop-blur-xl rounded-xl p-1 border border-gray-700/30">
+              <div className="bg-gradient-to-r from-gray-800/60 via-gray-800/70 to-gray-800/60 backdrop-blur-xl rounded-xl p-1 border border-gray-700/30 shadow-lg">
                 <button
                   onClick={() => setMode('general')}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all cursor-pointer whitespace-nowrap ${mode === 'general' ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
@@ -245,7 +260,7 @@ const AstrologyPage = () => {
                   <Calendar className="w-5 h-5 mr-2" />
                   Thông tin sinh của bạn
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-600/20">
                     <p className="text-sm text-gray-400 mb-1">Ngày sinh</p>
                     <p className="text-white font-medium">{user?.birthDate || 'Chưa có thông tin'}</p>
@@ -254,30 +269,29 @@ const AstrologyPage = () => {
                     <p className="text-sm text-gray-400 mb-1">Giờ sinh</p>
                     <p className="text-white font-medium">{user?.birthTime || 'Chưa có thông tin'}</p>
                   </div>
-                </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Nơi sinh của bạn (Thành phố, Quốc gia)"
-                    value={birthPlace}
-                    onChange={(e) => setBirthPlace(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
-                  />
+                  <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-600/20">
+                    <p className="text-sm text-gray-400 mb-1">Nơi sinh</p>
+                    <p className="text-white font-medium">{user?.birthPlace || 'Việt Nam'}</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.6, type: "spring" }}
               className="text-center mb-8"
             >
-              <Button
-                onClick={analyzeChart}
-                disabled={isAnalyzing}
-                className={`${mode === 'staranalysis' ? 'bg-gradient-to-r from-purple-600 to-blue-700 hover:from-purple-700 hover:to-blue-800' : mode === 'relations' ? 'bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800' : 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800'}`}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
+                <Button
+                  onClick={analyzeChart}
+                  disabled={isAnalyzing}
+                  className={`${mode === 'staranalysis' ? 'bg-gradient-to-r from-purple-600 to-blue-700 hover:from-purple-700 hover:to-blue-800 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50' : mode === 'relations' ? 'bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50' : 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50'}`}
+                >
                 {isAnalyzing ? (
                   <>
                     <LoadingSpinner size="sm" className="mr-2" />
@@ -289,11 +303,12 @@ const AstrologyPage = () => {
                     {mode === 'love' ? 'Phân tích tình duyên' : mode === 'staranalysis' ? 'Phân tích bản đồ sao' : mode === 'relations' ? 'Xem sơ đồ quan hệ cung' : 'Xem biểu đồ chiêm tinh'}
                   </>
                 )}
-              </Button>
+                </Button>
+              </motion.div>
             </motion.div>
 
             <AnimatePresence>
-              {showStarMap && user?.birthDate && user?.birthTime && birthPlace && (
+              {showStarMap && user?.birthDate && user?.birthTime && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -302,7 +317,7 @@ const AstrologyPage = () => {
                   <StarMap3D
                     birthDate={user.birthDate}
                     birthTime={user.birthTime}
-                    birthPlace={birthPlace}
+                    birthPlace={user.birthPlace || 'Việt Nam'}
                     userZodiac={userZodiac}
                     onMapGenerated={handleStarMapGenerated}
                   />
@@ -311,7 +326,7 @@ const AstrologyPage = () => {
             </AnimatePresence>
 
             <AnimatePresence>
-              {showRelationChart && user?.birthDate && user?.birthTime && birthPlace && (
+              {showRelationChart && user?.birthDate && user?.birthTime && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -320,7 +335,7 @@ const AstrologyPage = () => {
                   <HouseChart3D
                     birthDate={user.birthDate}
                     birthTime={user.birthTime}
-                    birthPlace={birthPlace}
+                    birthPlace={user.birthPlace || 'Việt Nam'}
                     userZodiac={userZodiac}
                   />
                 </motion.div>

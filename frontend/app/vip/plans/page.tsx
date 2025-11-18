@@ -12,7 +12,8 @@ import {
   ArrowLeft,
   CreditCard,
   Gift,
-  Infinity as InfinityIcon
+  Infinity as InfinityIcon,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Sidebar } from '@/components/layout/Sidebar';
@@ -32,7 +33,7 @@ const VIP_PLANS_DISPLAY: (VIPPlanInfo & { badge?: string })[] = [
     duration: 'mãi mãi',
     color: 'from-gray-500 to-gray-600',
     description: 'Trải nghiệm các tính năng cơ bản',
-    icon: '✨',
+    icon: 'free',
     features: [
       '3 lượt xem Tarot/ngày',
       'Rút 3 lá bài',
@@ -40,8 +41,7 @@ const VIP_PLANS_DISPLAY: (VIPPlanInfo & { badge?: string })[] = [
       '10 tin nhắn chat AI/ngày',
       '1 phân tích tử vi/ngày',
       '1 phân tích thần số học/ngày',
-      'Không có biểu đồ 3D',
-      
+      'Không có biểu đồ 3D'
     ]
   },
   {
@@ -50,57 +50,31 @@ const VIP_PLANS_DISPLAY: (VIPPlanInfo & { badge?: string })[] = [
     nameEn: 'VIP',
     price: 50000,
     duration: 'tháng',
-    color: 'from-blue-500 to-cyan-500',
-    description: 'Đầy đủ tính năng với giới hạn hợp lý',
-    icon: '👑',
-    badge: 'PHỔ BIẾN',
+    color: 'from-yellow-400 to-amber-500',
+    description: 'Không giới hạn + Đầy đủ tính năng',
+    icon: 'crown',
+    badge: 'KHUYẾN NGHỊ',
     popular: true,
     features: [
-      '20 lượt xem Tarot/ngày',
+      'Xem Tarot không giới hạn',
       'Rút 3, 5, hoặc 7 lá bài',
-      'Lưu lịch sử 30 ngày',
-      '100 tin nhắn chat AI/ngày',
-      '10 phân tích tử vi/ngày',
-      '5 phân tích tử vi/ngày',
-      '5 phân tích thần số học/ngày',
-      'Biểu đồ 3D đầy đủ',
-      'Giao diện tùy chỉnh',
-      'Tử vi tổng quát'
-    ]
-  },
-  {
-    tier: VIPTier.SORCERER,
-    name: 'Phù Thủy',
-    nameEn: 'Sorcerer',
-    price: 99000,
-    duration: 'tháng',
-    color: 'from-purple-500 to-pink-500',
-    description: 'Không giới hạn + Ưu tiên tính năng mới',
-    icon: '🔮',
-    badge: 'ĐỈNH CAO',
-    features: [
-      '♾️ Xem Tarot không giới hạn',
-      'Rút 3, 5, 7, 10 lá bài',
       'Lưu lịch sử vô hạn',
-      '♾️ Chat AI không giới hạn',
-      '♾️ Tử vi không giới hạn',
-      '♾️ Thần số học không giới hạn',
-      'Biểu đồ 3D cao cấp',
-      'Giao diện tùy chỉnh cao cấp',
-      'Tử vi tổng quát chi tiết',
-      '🎯 Hỗ trợ ưu tiên',
-      '🚀 Ưu tiên nhận tính năng mới',
-      '💎 Huy hiệu Phù Thủy đặc biệt',
-      '🎁 Nội dung độc quyền'
+      'Chat AI không giới hạn',
+      'Tử vi không giới hạn',
+      'Thần số học không giới hạn',
+      'Biểu đồ 3D đầy đủ',
+      'Tử vi tổng quát',
+      'Ưu tiên nhận tính năng mới',
+      'Huy hiệu VIP đặc biệt'
     ]
   }
 ];
 
 const paymentMethods = [
-  { name: 'Momo', logo: '📱' },
-  { name: 'ZaloPay', logo: '💳' },
-  { name: 'VNPay', logo: '🏦' },
-  { name: 'Thẻ quốc tế', logo: '💳' }
+  { name: 'Momo', logo: 'M' },
+  { name: 'ZaloPay', logo: 'Z' },
+  { name: 'VNPay', logo: 'V' },
+  { name: 'Thẻ quốc tế', logo: 'C' }
 ];
 
 export default function VIPPlansPage() {
@@ -147,7 +121,7 @@ export default function VIPPlansPage() {
         transactionId: `MOCK_${Date.now()}`
       }, token);
 
-      toast.success('Nâng cấp thành công! 🎉');
+      toast.success('Nâng cấp thành công!');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Có lỗi xảy ra');
@@ -222,8 +196,8 @@ export default function VIPPlansPage() {
         </div>
 
         {/* Pricing Cards */}
-        <section className="max-w-7xl mx-auto px-8 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <section className="max-w-6xl mx-auto px-8 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             {VIP_PLANS_DISPLAY.map((plan, index) => {
               const isCurrentPlan = currentTier === plan.tier;
               const isFree = plan.tier === VIPTier.FREE;
@@ -234,14 +208,14 @@ export default function VIPPlansPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover={!isFree ? { y: -8 } : {}}
+                  whileHover={!isFree ? { y: -8, scale: 1.02 } : {}}
                   className={`relative rounded-3xl p-8 transition-all duration-300 ${
                     plan.popular
-                      ? 'bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500 shadow-2xl shadow-yellow-500/30'
+                      ? 'bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500 shadow-2xl shadow-yellow-500/30 scale-105'
                       : isFree
-                      ? 'bg-gray-900/40 backdrop-blur-xl border border-gray-700/30'
-                      : 'bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 hover:border-purple-500/30'
-                  } ${isCurrentPlan ? 'ring-2 ring-green-500' : ''}`}
+                      ? 'bg-gray-900/60 backdrop-blur-xl border-2 border-gray-700/50'
+                      : 'bg-gray-900/60 backdrop-blur-xl border border-gray-700/50'
+                  } ${isCurrentPlan ? 'ring-2 ring-green-500 ring-offset-2 ring-offset-gray-950' : ''}`}
                 >
                   {/* Current Plan Badge */}
                   {isCurrentPlan && (
@@ -267,55 +241,55 @@ export default function VIPPlansPage() {
                     </motion.div>
                   )}
 
-                  {/* Badge for Sorcerer */}
-                  {plan.tier === VIPTier.SORCERER && !isCurrentPlan && (
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" />
-                        {plan.badge}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Icon */}
-                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${plan.color} mb-6 text-4xl`}>
-                    {plan.icon}
-                  </div>
-
                   {/* Plan Name */}
-                  <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                  <h3 className="text-3xl font-bold text-white mb-2">{plan.name}</h3>
                   <p className="text-gray-400 text-sm mb-4">{plan.description}</p>
 
                   {/* Price */}
-                  <div className="mb-6">
-                    <div className="flex items-baseline gap-1">
-                      <span className={`text-4xl font-bold ${
-                        isFree ? 'text-gray-400' : 'bg-gradient-to-r from-yellow-200 to-amber-400 bg-clip-text text-transparent'
-                      }`}>
-                        {plan.price === 0 ? 'Miễn phí' : `${plan.price.toLocaleString('vi-VN')}đ`}
-                      </span>
-                      {plan.price > 0 && (
-                        <span className="text-gray-400">/{plan.duration}</span>
+                  <div className="mb-6 p-4 bg-gray-800/30 rounded-xl border border-gray-700/30">
+                    <div className="flex items-baseline gap-2 justify-center">
+                      {isFree ? (
+                        <>
+                          <span className="text-5xl font-bold text-gray-400">
+                            0đ
+                          </span>
+                          <span className="text-gray-400 text-lg">/tháng</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-5xl font-bold bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                            {plan.price.toLocaleString('vi-VN')}đ
+                          </span>
+                          <span className="text-gray-400 text-lg">/{plan.duration}</span>
+                        </>
                       )}
                     </div>
+                    {!isFree && (
+                      <p className="text-center text-yellow-400/80 text-sm mt-2 font-medium flex items-center justify-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Không giới hạn tất cả tính năng
+                      </p>
+                    )}
                   </div>
 
                   {/* Features */}
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-2.5 mb-8">
                     {plan.features.map((feature, i) => (
                       <motion.li
                         key={i}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + i * 0.05 }}
-                        className="flex items-start gap-3 text-gray-300"
+                        transition={{ delay: 0.3 + i * 0.03 }}
+                        className="flex items-start gap-3 text-gray-300 p-2 rounded-lg hover:bg-gray-800/30 transition-colors"
                       >
                         <div className={`flex-shrink-0 w-5 h-5 rounded-full ${
-                          isFree ? 'bg-gray-600' : 'bg-gradient-to-br from-green-400 to-emerald-500'
-                        } flex items-center justify-center mt-0.5`}>
-                          <Check className="w-3 h-3 text-white" />
+                          isFree 
+                            ? 'bg-gradient-to-br from-gray-500 to-gray-600' 
+                            : 'bg-gradient-to-br from-yellow-400 to-amber-500'
+                        } flex items-center justify-center mt-0.5 shadow-lg`}>
+                          <Check className="w-3 h-3 text-white font-bold" />
                         </div>
-                        <span className="text-sm">{feature}</span>
+                        <span className="text-sm leading-relaxed">{feature}</span>
                       </motion.li>
                     ))}
                   </ul>
@@ -324,14 +298,14 @@ export default function VIPPlansPage() {
                   <Button
                     onClick={() => handleSelectPlan(plan.tier)}
                     disabled={isCurrentPlan || isFree}
-                    className={`w-full py-4 font-bold ${
+                    className={`w-full py-4 font-bold text-base relative overflow-hidden ${
                       isCurrentPlan
                         ? 'bg-green-600 text-white cursor-not-allowed'
                         : isFree
-                        ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
                         : plan.popular
-                        ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 border-2 border-yellow-300 shadow-lg shadow-yellow-500/30'
-                        : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
+                        ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 border-2 border-yellow-300 shadow-lg shadow-yellow-500/50 hover:shadow-yellow-500/70'
+                        : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700'
                     }`}
                   >
                     {isCurrentPlan ? (
@@ -339,12 +313,24 @@ export default function VIPPlansPage() {
                         <Check className="w-5 h-5 mr-2" />
                         Đang sử dụng
                       </>
-                    ) : isFree ? (
-                      'Gói hiện tại'
+                    ) :                       isFree ? (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        Đang dùng
+                      </>
                     ) : (
                       <>
                         <Crown className="w-5 h-5 mr-2" />
                         Nâng cấp ngay
+                        {plan.popular && (
+                          <motion.div
+                            className="ml-2 inline-flex"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                          >
+                            <Zap className="w-4 h-4" />
+                          </motion.div>
+                        )}
                       </>
                     )}
                   </Button>
@@ -445,50 +431,70 @@ export default function VIPPlansPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-16"
+            className="mt-20"
           >
-            <h3 className="text-2xl font-bold text-white mb-6 text-center">So sánh chi tiết các gói</h3>
-            <div className="bg-gray-900/60 backdrop-blur-xl rounded-3xl overflow-hidden border border-gray-700/50">
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold text-white mb-3">So sánh chi tiết các gói</h3>
+              <p className="text-gray-400">Xem đầy đủ sự khác biệt giữa các gói dịch vụ</p>
+            </div>
+            <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/60 backdrop-blur-xl rounded-3xl overflow-hidden border-2 border-gray-700/50 shadow-2xl">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-800/50">
+                  <thead className="bg-gradient-to-r from-gray-800/80 to-gray-800/50">
                     <tr>
-                      <th className="text-left p-4 text-gray-300">Tính năng</th>
-                      <th className="text-center p-4 text-gray-300">Miễn phí</th>
-                      <th className="text-center p-4 text-yellow-400">VIP</th>
-                      <th className="text-center p-4 text-purple-400">Phù Thủy</th>
+                      <th className="text-left p-5 text-gray-200 font-bold text-lg">Tính năng</th>
+                      <th className="text-center p-5 text-gray-300 font-semibold">
+                        <div className="flex items-center justify-center gap-2">
+                          <Sparkles className="w-5 h-5" />
+                          Miễn phí
+                        </div>
+                      </th>
+                      <th className="text-center p-5 font-semibold">
+                        <div className="flex items-center justify-center gap-2 text-yellow-400">
+                          <Crown className="w-5 h-5" />
+                          VIP
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-300">
-                    <tr className="border-t border-gray-700/30">
-                      <td className="p-4">Xem Tarot/ngày</td>
-                      <td className="text-center p-4">3</td>
-                      <td className="text-center p-4">20</td>
-                      <td className="text-center p-4"><InfinityIcon className="w-5 h-5 inline text-purple-400" /></td>
+                    <tr className="border-t border-gray-700/50 hover:bg-gray-800/30 transition-colors">
+                      <td className="p-4 font-medium">Xem Tarot/ngày</td>
+                      <td className="text-center p-4 text-gray-400">3 lượt</td>
+                      <td className="text-center p-4">
+                        <div className="flex items-center justify-center gap-2 text-yellow-400 font-semibold">
+                          <InfinityIcon className="w-5 h-5" />
+                          Không giới hạn
+                        </div>
+                      </td>
                     </tr>
-                    <tr className="border-t border-gray-700/30 bg-gray-800/20">
-                      <td className="p-4">Chat AI/ngày</td>
-                      <td className="text-center p-4">10</td>
-                      <td className="text-center p-4">100</td>
-                      <td className="text-center p-4"><InfinityIcon className="w-5 h-5 inline text-purple-400" /></td>
+                    <tr className="border-t border-gray-700/50 bg-gray-800/20 hover:bg-gray-800/40 transition-colors">
+                      <td className="p-4 font-medium">Chat AI/ngày</td>
+                      <td className="text-center p-4 text-gray-400">10 tin nhắn</td>
+                      <td className="text-center p-4">
+                        <div className="flex items-center justify-center gap-2 text-yellow-400 font-semibold">
+                          <InfinityIcon className="w-5 h-5" />
+                          Không giới hạn
+                        </div>
+                      </td>
                     </tr>
-                    <tr className="border-t border-gray-700/30">
-                      <td className="p-4">Biểu đồ 3D</td>
-                      <td className="text-center p-4">❌</td>
-                      <td className="text-center p-4">✅</td>
-                      <td className="text-center p-4">✅</td>
+                    <tr className="border-t border-gray-700/50 hover:bg-gray-800/30 transition-colors">
+                      <td className="p-4 font-medium">Biểu đồ 3D</td>
+                      <td className="text-center p-4">
+                        <X className="w-6 h-6 text-red-400 inline-block" />
+                      </td>
+                      <td className="text-center p-4">
+                        <Check className="w-6 h-6 text-green-400 inline-block" />
+                      </td>
                     </tr>
-                    <tr className="border-t border-gray-700/30 bg-gray-800/20">
-                      <td className="p-4">Hỗ trợ ưu tiên</td>
-                      <td className="text-center p-4">❌</td>
-                      <td className="text-center p-4">❌</td>
-                      <td className="text-center p-4">✅</td>
-                    </tr>
-                    <tr className="border-t border-gray-700/30">
-                      <td className="p-4">Ưu tiên tính năng mới</td>
-                      <td className="text-center p-4">❌</td>
-                      <td className="text-center p-4">❌</td>
-                      <td className="text-center p-4">✅</td>
+                    <tr className="border-t border-gray-700/50 bg-gray-800/20 hover:bg-gray-800/40 transition-colors">
+                      <td className="p-4 font-medium">Ưu tiên tính năng mới</td>
+                      <td className="text-center p-4">
+                        <X className="w-6 h-6 text-red-400 inline-block" />
+                      </td>
+                      <td className="text-center p-4">
+                        <Check className="w-6 h-6 text-green-400 inline-block" />
+                      </td>
                     </tr>
                   </tbody>
                 </table>

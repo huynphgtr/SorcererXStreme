@@ -47,8 +47,9 @@ export class VIPService {
     const today = new Date().toDateString();
     const lastReset = new Date(stats.lastResetDate).toDateString();
     
+    let currentStats = stats;
     if (today !== lastReset) {
-      await prisma.usageStats.update({
+      currentStats = await prisma.usageStats.update({
         where: { userId },
         data: {
           tarotReadingsToday: 0,
@@ -75,7 +76,7 @@ export class VIPService {
       return { allowed: true, tier }; // Feature không có usage tracking
     }
 
-    const currentUsage = stats[usageField] as number;
+    const currentUsage = currentStats[usageField] as number;
     const allowed = currentUsage < featureLimit;
 
     return { allowed, currentUsage, limit: featureLimit, tier };

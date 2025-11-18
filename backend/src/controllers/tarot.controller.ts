@@ -31,21 +31,30 @@ export async function getTarotReading(req: AuthRequest, res: Response): Promise<
       interpretation += `\n\n${comfortingMsg}`;
     }
 
-    // Increment usage counter
-    await VIPService.incrementUsage(userId, 'tarot');
+    // Increment usage counter (don't fail if this errors)
+    try {
+      await VIPService.incrementUsage(userId, 'tarot');
+    } catch (usageError) {
+      console.warn('Failed to increment usage counter:', usageError);
+      // Continue anyway - don't fail the request
+    }
 
     const reading = await prisma.tarotReading.create({
       data: {
         userId,
-        question,
-        cardsDrawn,
+        question: question || '',
+        cardsDrawn: Array.isArray(cardsDrawn) ? cardsDrawn.join(', ') : cardsDrawn,
         interpretation,
       },
     });
 
     res.status(200).json({ interpretation });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  } catch (error: any) {
+    console.error('❌ Tarot controller error:', error);
+    const errorMessage = error.message || 'Internal server error';
+    res.status(500).json({ 
+      message: errorMessage,
+      error: error.message 
+    });
   }
 }

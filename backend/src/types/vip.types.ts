@@ -1,7 +1,6 @@
 export enum VIPTier {
   FREE = 'FREE',
-  VIP = 'VIP',
-  SORCERER = 'SORCERER'
+  VIP = 'VIP'
 }
 
 export enum SubscriptionStatus {
@@ -56,24 +55,8 @@ export const VIP_TIER_LIMITS: Record<VIPTier, VIPFeatureLimits> = {
     customThemes: false,
   },
   [VIPTier.VIP]: {
-    tarotReadingsPerDay: 20,
-    tarotCardOptions: [3, 5, 7],
-    tarotHistoryDays: 30,
-    chatMessagesPerDay: 100,
-    chatHistoryDays: 30,
-    astrologyAnalysisPerDay: 10,
-    astrology3DVisualization: true,
-    fortuneReadingsPerDay: 5,
-    comprehensiveFortune: true,
-    numerologyAnalysisPerDay: 5,
-    prioritySupport: false,
-    earlyAccess: false,
-    adFree: true,
-    customThemes: true,
-  },
-  [VIPTier.SORCERER]: {
     tarotReadingsPerDay: -1, // unlimited
-    tarotCardOptions: [3, 5, 7, 10],
+    tarotCardOptions: [3, 5, 7],
     tarotHistoryDays: -1, // unlimited
     chatMessagesPerDay: -1, // unlimited
     chatHistoryDays: -1, // unlimited
@@ -116,6 +99,7 @@ export const VIP_PLANS: VIPPlanInfo[] = [
       'Rút 3 lá bài',
       'Lưu lịch sử 7 ngày',
       '10 tin nhắn chat AI/ngày',
+      '1 phân tích chiêm tinh/ngày',
       '1 phân tích tử vi/ngày',
       '1 phân tích thần số học/ngày',
       'Không có biểu đồ 3D',
@@ -128,47 +112,21 @@ export const VIP_PLANS: VIPPlanInfo[] = [
     nameEn: 'VIP',
     price: 50000,
     duration: 'tháng',
-    color: 'from-blue-500 to-cyan-500',
-    description: 'Đầy đủ tính năng với giới hạn hợp lý',
+    color: 'from-yellow-400 to-amber-500',
+    description: 'Không giới hạn + Đầy đủ tính năng',
     icon: '👑',
     features: [
-      '20 lượt xem Tarot/ngày',
-      'Rút 3, 5, hoặc 7 lá bài',
-      'Lưu lịch sử 30 ngày',
-      '100 tin nhắn chat AI/ngày',
-      '10 phân tích tử vi/ngày',
-      '5 phân tích tử vi/ngày',
-      '5 phân tích thần số học/ngày',
-      'Biểu đồ 3D đầy đủ',
-      'Không quảng cáo',
-      'Giao diện tùy chỉnh',
-      'Tử vi tổng quát'
-    ]
-  },
-  {
-    tier: VIPTier.SORCERER,
-    name: 'Phù Thủy',
-    nameEn: 'Sorcerer',
-    price: 99000,
-    duration: 'tháng',
-    color: 'from-purple-500 to-pink-500',
-    description: 'Không giới hạn + Ưu tiên tính năng mới',
-    icon: '🔮',
-    features: [
       '♾️ Xem Tarot không giới hạn',
-      'Rút 3, 5, 7, 10 lá bài',
+      'Rút 3, 5, hoặc 7 lá bài',
       'Lưu lịch sử vô hạn',
       '♾️ Chat AI không giới hạn',
       '♾️ Tử vi không giới hạn',
       '♾️ Thần số học không giới hạn',
-      'Biểu đồ 3D cao cấp',
-      'Không quảng cáo',
-      'Giao diện tùy chỉnh cao cấp',
-      'Tử vi tổng quát chi tiết',
+      'Biểu đồ 3D đầy đủ',
+      'Tử vi tổng quát',
       '🎯 Hỗ trợ ưu tiên',
       '🚀 Ưu tiên nhận tính năng mới',
-      '💎 Huy hiệu Phù Thủy đặc biệt',
-      '🎁 Nội dung độc quyền'
+      '💎 Huy hiệu VIP đặc biệt'
     ]
   }
 ];

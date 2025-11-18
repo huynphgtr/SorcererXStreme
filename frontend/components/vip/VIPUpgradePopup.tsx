@@ -34,8 +34,6 @@ export const VIPUpgradePopup = ({
     onClose();
     router.push('/vip/plans');
   };
-  
-  const isSorcererRequired = requiredTier === VIPTier.SORCERER;
 
   return (
     <AnimatePresence>
@@ -87,7 +85,7 @@ export const VIPUpgradePopup = ({
                 </motion.div>
 
                 <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-500 bg-clip-text text-transparent mb-2">
-                  Nâng cấp lên {isSorcererRequired ? 'Phù Thủy' : 'VIP'}
+                  Nâng cấp lên VIP
                 </h2>
                 <p className="text-center text-gray-300 text-lg">
                   Để truy cập <span className="text-yellow-400 font-semibold">{featureName}</span>

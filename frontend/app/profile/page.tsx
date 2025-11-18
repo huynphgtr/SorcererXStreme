@@ -37,11 +37,35 @@ export default function ProfilePage() {
   const { user, isAuthenticated, updateProfile } = useAuthStore();
   const { partner, breakupData, addPartner, updatePartner, breakup, confirmRecovery } = useProfileStore();
 
+  // Helper function to format date for input type="date"
+  const formatDateForInput = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0]; // Returns "yyyy-MM-dd"
+    } catch {
+      return '';
+    }
+  };
+
   const [editForm, setEditForm] = useState({
     name: user?.name || '',
-    birthDate: user?.birthDate || '',
-    birthTime: user?.birthTime || ''
+    birthDate: formatDateForInput(user?.birthDate),
+    birthTime: user?.birthTime || '',
+    birthPlace: user?.birthPlace || ''
   });
+
+  // Update editForm when user data changes
+  useEffect(() => {
+    if (user) {
+      setEditForm({
+        name: user.name || '',
+        birthDate: formatDateForInput(user.birthDate),
+        birthTime: user.birthTime || '',
+        birthPlace: user.birthPlace || ''
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     // Kiểm tra breakup data và hiện thông báo mỗi 5 ngày
@@ -82,7 +106,7 @@ export default function ProfilePage() {
   const handleSaveProfile = async () => {
     const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
     if (token) {
-      await updateProfile(editForm.name, editForm.birthDate, editForm.birthTime, token);
+      await updateProfile(editForm.name, editForm.birthDate, editForm.birthTime, editForm.birthPlace, token);
       setIsEditing(false);
       toast.success('Cập nhật thông tin thành công!');
     } else {
@@ -210,34 +234,51 @@ export default function ProfilePage() {
                       onChange={(e) => setEditForm({...editForm, birthTime: e.target.value})}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">Nơi sinh</label>
+                    <Input
+                      value={editForm.birthPlace}
+                      onChange={(e) => setEditForm({...editForm, birthPlace: e.target.value})}
+                      placeholder="Thành phố, Quốc gia"
+                    />
+                  </div>
+                  <div className="md:col-span-2 flex items-end">
                     <Button onClick={handleSaveProfile} className="w-full whitespace-nowrap">
                       Lưu thay đổi
                     </Button>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="bg-gray-900/50 rounded-xl p-4">
                     <div className="flex items-center mb-2">
                       <User className="w-5 h-5 text-gray-400 mr-2" />
                       <p className="text-sm text-gray-400">Họ tên</p>
                     </div>
-                    <p className="text-white font-medium">{user?.name}</p>
+                    <p className="text-white font-medium">{user?.name || 'Chưa cập nhật'}</p>
                   </div>
                   <div className="bg-gray-900/50 rounded-xl p-4">
                     <div className="flex items-center mb-2">
                       <Calendar className="w-5 h-5 text-gray-400 mr-2" />
                       <p className="text-sm text-gray-400">Ngày sinh</p>
                     </div>
-                    <p className="text-white font-medium">{user?.birthDate}</p>
+                    <p className="text-white font-medium">
+                      {user?.birthDate ? new Date(user.birthDate).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}
+                    </p>
                   </div>
                   <div className="bg-gray-900/50 rounded-xl p-4">
                     <div className="flex items-center mb-2">
                       <Clock className="w-5 h-5 text-gray-400 mr-2" />
                       <p className="text-sm text-gray-400">Giờ sinh</p>
                     </div>
-                    <p className="text-white font-medium">{user?.birthTime}</p>
+                    <p className="text-white font-medium">{user?.birthTime || 'Chưa cập nhật'}</p>
+                  </div>
+                  <div className="bg-gray-900/50 rounded-xl p-4">
+                    <div className="flex items-center mb-2">
+                      <MapPin className="w-5 h-5 text-gray-400 mr-2" />
+                      <p className="text-sm text-gray-400">Nơi sinh</p>
+                    </div>
+                    <p className="text-white font-medium">{user?.birthPlace || 'Chưa cập nhật'}</p>
                   </div>
                 </div>
               )}

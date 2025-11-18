@@ -17,6 +17,7 @@ model User {
   name          String?
   birthDate     DateTime?
   birthTime     String?
+  birthPlace    String?
   createdAt     DateTime  @default(now())
   vipTier       String    @default("FREE") // FREE, VIP, SORCERER
   vipExpiresAt  DateTime?

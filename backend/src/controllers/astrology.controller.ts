@@ -3,6 +3,7 @@ import { getAiResponse } from '../services/gemini.service';
 import { generateAstrologyPrompt } from '../services/ai-prompts.service';
 import { addBreakupContextToPrompt, getComfortingMessage } from '../services/breakup-utils.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { VIPService } from '../services/vip.service';
 
 export async function getAstrology(req: AuthRequest, res: Response): Promise<void> {
   try {
@@ -34,9 +35,21 @@ export async function getAstrology(req: AuthRequest, res: Response): Promise<voi
       analysis += `\n\n${comfortingMsg}`;
     }
 
+    // Increment usage counter (don't fail if this errors)
+    try {
+      await VIPService.incrementUsage(userId, 'astrology');
+    } catch (usageError) {
+      console.warn('Failed to increment usage counter:', usageError);
+      // Continue anyway - don't fail the request
+    }
+
     res.status(200).json({ analysis });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  } catch (error: any) {
+    console.error('❌ Astrology controller error:', error);
+    const errorMessage = error.message || 'Internal server error';
+    res.status(500).json({ 
+      message: errorMessage,
+      error: error.message 
+    });
   }
 }

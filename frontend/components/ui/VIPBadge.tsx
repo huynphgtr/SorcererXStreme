@@ -19,7 +19,6 @@ const TIER_CONFIG = {
     shadow: 'shadow-gray-500/30',
     border: 'border-gray-400',
     text: 'Free',
-    icon: '✨',
     textColor: 'text-white'
   },
   [VIPTier.VIP]: {
@@ -27,16 +26,7 @@ const TIER_CONFIG = {
     shadow: 'shadow-yellow-500/50',
     border: 'border-yellow-300',
     text: 'VIP',
-    icon: '👑',
     textColor: 'text-gray-900'
-  },
-  [VIPTier.SORCERER]: {
-    gradient: 'from-purple-500 via-pink-500 to-purple-600',
-    shadow: 'shadow-purple-500/50',
-    border: 'border-purple-300',
-    text: 'Phù Thủy',
-    icon: '🔮',
-    textColor: 'text-white'
   }
 };
 
@@ -73,9 +63,7 @@ export const VIPBadge = ({
         className
       )}
     >
-      {tier === VIPTier.SORCERER ? (
-        <span className="text-lg">{config.icon}</span>
-      ) : tier === VIPTier.FREE ? (
+      {tier === VIPTier.FREE ? (
         <Sparkles className={cn(iconSizes[size])} />
       ) : (
         <Crown className={cn(iconSizes[size], "fill-yellow-600")} />
