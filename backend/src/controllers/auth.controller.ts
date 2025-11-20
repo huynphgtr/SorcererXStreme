@@ -26,7 +26,7 @@ export async function register(req: AuthRequest, res: Response): Promise<void> {
     const user = await prisma.user.create({
       data: {
         email,
-        passwordHash,
+        password_hash: passwordHash,
       },
     });
 
@@ -47,12 +47,12 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
+    if (!user || !user.password_hash) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;
     }
 
-    const isPasswordValid = await compare(password, user.passwordHash);
+    const isPasswordValid = await compare(password, user.password_hash);
     if (!isPasswordValid) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;
@@ -65,11 +65,11 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
       id: user.id,
       email: user.email,
       name: user.name,
-      birthDate: user.birthDate,
-      birthTime: user.birthTime,
-      birthPlace: user.birthPlace,
-      vipTier: user.vipTier,
-      vipExpiresAt: user.vipExpiresAt
+      birthDate: user.birth_date,
+      birthTime: user.birth_time,
+      birthPlace: user.birth_place,
+      vipTier: user.vip_tier,
+      vipExpiresAt: user.vip_expires_at
     };
 
     res.status(200).json({ token, user: userData });

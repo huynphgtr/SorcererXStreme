@@ -9,10 +9,14 @@ export class VIPService {
     userId: string,
     feature: keyof typeof VIP_TIER_LIMITS.FREE
   ): Promise<{ allowed: boolean; currentUsage?: number; limit?: number; tier: VIPTier }> {
+    console.log(`[VIPService] Checking access for userId: ${userId}, feature: ${feature}`);
+    
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { usageStats: true }
     });
+
+    console.log(`[VIPService] User found:`, user ? `Yes (${user.email})` : 'No');
 
     if (!user) {
       throw new Error('User not found');
@@ -28,6 +32,11 @@ export class VIPService {
       return { allowed: featureLimit, tier };
     }
 
+    // Nếu là array (tarotCardOptions)
+    if (Array.isArray(featureLimit)) {
+      return { allowed: true, tier };
+    }
+
     // Nếu unlimited (-1)
     if (featureLimit === -1) {
       return { allowed: true, limit: -1, tier };
@@ -38,37 +47,44 @@ export class VIPService {
     if (!stats) {
       // Tạo mới usage stats
       await prisma.usageStats.create({
-        data: { userId }
+        data: { 
+          user_id: userId,
+          tarot_readings_today: 0,
+          chat_messages_today: 0,
+          astrology_today: 0,
+          fortune_today: 0,
+          numerology_today: 0
+        }
       });
-      return { allowed: true, currentUsage: 0, limit: featureLimit, tier };
+      return { allowed: true, currentUsage: 0, limit: featureLimit as number, tier };
     }
 
     // Reset nếu qua ngày mới
     const today = new Date().toDateString();
-    const lastReset = new Date(stats.lastResetDate).toDateString();
+    const lastReset = new Date(stats.last_reset_date).toDateString();
     
     let currentStats = stats;
     if (today !== lastReset) {
       currentStats = await prisma.usageStats.update({
-        where: { userId },
+        where: { user_id: userId },
         data: {
-          tarotReadingsToday: 0,
-          chatMessagesToday: 0,
-          astrologyToday: 0,
-          fortuneToday: 0,
-          numerologyToday: 0,
-          lastResetDate: new Date()
+          tarot_readings_today: 0,
+          chat_messages_today: 0,
+          astrology_today: 0,
+          fortune_today: 0,
+          numerology_today: 0,
+          last_reset_date: new Date()
         }
       });
     }
 
     // Map feature name to usage stat
     const usageMap: Record<string, keyof typeof stats> = {
-      tarotReadingsPerDay: 'tarotReadingsToday',
-      chatMessagesPerDay: 'chatMessagesToday',
-      astrologyAnalysisPerDay: 'astrologyToday',
-      fortuneReadingsPerDay: 'fortuneToday',
-      numerologyAnalysisPerDay: 'numerologyToday'
+      tarotReadingsPerDay: 'tarot_readings_today',
+      chatMessagesPerDay: 'chat_messages_today',
+      astrologyAnalysisPerDay: 'astrology_today',
+      fortuneReadingsPerDay: 'fortune_today',
+      numerologyAnalysisPerDay: 'numerology_today'
     };
 
     const usageField = usageMap[feature];
@@ -77,38 +93,38 @@ export class VIPService {
     }
 
     const currentUsage = currentStats[usageField] as number;
-    const allowed = currentUsage < featureLimit;
+    const allowed = currentUsage < (featureLimit as number);
 
-    return { allowed, currentUsage, limit: featureLimit, tier };
+    return { allowed, currentUsage, limit: featureLimit as number, tier };
   }
 
   // Increment usage counter
   static async incrementUsage(userId: string, feature: string): Promise<void> {
     const usageMap: Record<string, string> = {
-      tarot: 'tarotReadingsToday',
-      chat: 'chatMessagesToday',
-      astrology: 'astrologyToday',
-      fortune: 'fortuneToday',
-      numerology: 'numerologyToday'
+      tarot: 'tarot_readings_today',
+      chat: 'chat_messages_today',
+      astrology: 'astrology_today',
+      fortune: 'fortune_today',
+      numerology: 'numerology_today'
     };
 
     const field = usageMap[feature];
     if (!field) return;
 
     const stats = await prisma.usageStats.findUnique({
-      where: { userId }
+      where: { user_id: userId }
     });
 
     if (!stats) {
       await prisma.usageStats.create({
         data: {
-          userId,
+          user_id: userId,
           [field]: 1
         }
       });
     } else {
       await prisma.usageStats.update({
-        where: { userId },
+        where: { user_id: userId },
         data: {
           [field]: { increment: 1 }
         }
@@ -127,16 +143,16 @@ export class VIPService {
     }
 
     // Kiểm tra hết hạn
-    if (user.vipExpiresAt && new Date() > user.vipExpiresAt) {
+    if (user.vip_expires_at && new Date() > user.vip_expires_at) {
       // Hết hạn -> downgrade về FREE
       await prisma.user.update({
         where: { id: userId },
-        data: { vipTier: VIPTier.FREE, vipExpiresAt: null }
+        data: { vip_tier: VIPTier.FREE, vip_expires_at: null }
       });
       return VIPTier.FREE;
     }
 
-    return user.vipTier as VIPTier;
+    return user.vip_tier as VIPTier;
   }
 
   // Lấy thông tin giới hạn của user
@@ -153,7 +169,7 @@ export class VIPService {
       tier,
       limits,
       usage: user?.usageStats || null,
-      expiresAt: user?.vipExpiresAt
+      expiresAt: user?.vip_expires_at
     };
   }
 
@@ -168,14 +184,14 @@ export class VIPService {
     // Tạo subscription record
     const subscription = await prisma.subscription.create({
       data: {
-        userId,
+        user_id: userId,
         tier,
         price,
-        startDate,
-        endDate,
+        start_date: startDate,
+        end_date: endDate,
         status: SubscriptionStatus.ACTIVE,
-        paymentMethod,
-        transactionId
+        payment_method: paymentMethod,
+        transaction_id: transactionId
       }
     });
 
@@ -183,8 +199,8 @@ export class VIPService {
     await prisma.user.update({
       where: { id: userId },
       data: {
-        vipTier: tier,
-        vipExpiresAt: endDate
+        vip_tier: tier,
+        vip_expires_at: endDate
       }
     });
 
@@ -195,10 +211,10 @@ export class VIPService {
   static async cancelSubscription(userId: string) {
     const activeSubscription = await prisma.subscription.findFirst({
       where: {
-        userId,
+        user_id: userId,
         status: SubscriptionStatus.ACTIVE
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { created_at: 'desc' }
     });
 
     if (!activeSubscription) {
@@ -217,8 +233,8 @@ export class VIPService {
   // Lấy lịch sử subscription
   static async getSubscriptionHistory(userId: string) {
     return await prisma.subscription.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
+      where: { user_id: userId },
+      orderBy: { created_at: 'desc' }
     });
   }
 
@@ -228,10 +244,10 @@ export class VIPService {
     
     const expiredUsers = await prisma.user.findMany({
       where: {
-        vipExpiresAt: {
+        vip_expires_at: {
           lte: now
         },
-        vipTier: {
+        vip_tier: {
           not: VIPTier.FREE
         }
       }
@@ -241,17 +257,17 @@ export class VIPService {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          vipTier: VIPTier.FREE,
-          vipExpiresAt: null
+          vip_tier: VIPTier.FREE,
+          vip_expires_at: null
         }
       });
 
       // Update subscription status
       await prisma.subscription.updateMany({
         where: {
-          userId: user.id,
+          user_id: user.id,
           status: SubscriptionStatus.ACTIVE,
-          endDate: {
+          end_date: {
             lte: now
           }
         },

@@ -7,7 +7,10 @@ export const checkFeatureLimit = (feature: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = (req as any).userId;
+      console.log(`[VIP Middleware] Feature: ${feature}, UserId: ${userId}`);
+      
       if (!userId) {
+        console.log('[VIP Middleware] No userId found');
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
@@ -43,7 +46,15 @@ export const checkFeatureLimit = (feature: string) => {
 
       next();
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      console.error(`checkFeatureLimit error for feature "${feature}":`, error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
+      res.status(500).json({ 
+        message: error.message || 'Internal server error',
+        error: 'VIP_MIDDLEWARE_ERROR'
+      });
     }
   };
 };

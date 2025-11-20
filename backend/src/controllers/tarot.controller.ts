@@ -39,18 +39,24 @@ export async function getTarotReading(req: AuthRequest, res: Response): Promise<
       // Continue anyway - don't fail the request
     }
 
-    const reading = await prisma.tarotReading.create({
-      data: {
-        userId,
-        question: question || '',
-        cardsDrawn: Array.isArray(cardsDrawn) ? cardsDrawn.join(', ') : cardsDrawn,
-        interpretation,
-      },
-    });
+    // Save to database (don't fail if this errors)
+    try {
+      const reading = await prisma.tarotReading.create({
+        data: {
+          userId,
+          question: question || '',
+          cardsDrawn: Array.isArray(cardsDrawn) ? cardsDrawn.join(', ') : cardsDrawn,
+          interpretation,
+        },
+      });
+    } catch (dbError: any) {
+      console.warn('Failed to save tarot reading to database:', dbError.message);
+      // Continue anyway - don't fail the request
+    }
 
     res.status(200).json({ interpretation });
   } catch (error: any) {
-    console.error('❌ Tarot controller error:', error);
+    console.error('Tarot controller error:', error);
     const errorMessage = error.message || 'Internal server error';
     res.status(500).json({ 
       message: errorMessage,

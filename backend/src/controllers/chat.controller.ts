@@ -18,22 +18,25 @@ export async function sendMessage(req: AuthRequest, res: Response): Promise<void
 
     const { message, userContext } = req.body;
 
-    await prisma.chatMessage.create({
-      data: {
-        userId,
-        content: message,
-        role: 'user',
-      },
-    });
+    // TODO: Save chat message to database (ChatMessage table not in current schema)
+    // await prisma.chatMessage.create({
+    //   data: {
+    //     userId,
+    //     content: message,
+    //     role: 'user',
+    //   },
+    // });
 
-    const recentMessages = await prisma.chatMessage.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 10,
-      select: { role: true, content: true }
-    });
+    // TODO: Get chat history (ChatMessage table not in current schema)
+    // const recentMessages = await prisma.chatMessage.findMany({
+    //   where: { userId },
+    //   orderBy: { createdAt: 'desc' },
+    //   take: 10,
+    //   select: { role: true, content: true }
+    // });
 
-    const chatHistory = recentMessages.reverse();
+    // const chatHistory = recentMessages.reverse();
+    const chatHistory: any[] = []; // Empty for now
     let prompt = generateChatPrompt(message, userContext || {}, chatHistory);
     
     if (userContext?.isInBreakup) {
@@ -47,13 +50,14 @@ export async function sendMessage(req: AuthRequest, res: Response): Promise<void
       aiResponse += `\n\n${comfortingMsg}`;
     }
 
-    await prisma.chatMessage.create({
-      data: {
-        userId,
-        content: aiResponse,
-        role: 'assistant',
-      },
-    });
+    // TODO: Save AI response (ChatMessage table not in current schema)
+    // await prisma.chatMessage.create({
+    //   data: {
+    //     userId,
+    //     content: aiResponse,
+    //     role: 'assistant',
+    //   },
+    // });
 
     // Increment usage counter
     await VIPService.incrementUsage(userId, 'chat');
@@ -73,13 +77,14 @@ export async function getChatHistory(req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    const messages = await prisma.chatMessage.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'asc' },
-      take: 50
-    });
+    // TODO: Get chat history (ChatMessage table not in current schema)
+    // const messages = await prisma.chatMessage.findMany({
+    //   where: { userId },
+    //   orderBy: { createdAt: 'asc' },
+    //   take: 50
+    // });
 
-    res.status(200).json({ messages });
+    res.status(200).json({ messages: [] }); // Return empty array for now
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

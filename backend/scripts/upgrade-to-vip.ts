@@ -23,7 +23,7 @@ async function upgradeToVIP() {
     }
 
     console.log(`\n📧 Tìm thấy user: ${user.email} (${user.name || 'Chưa có tên'})`);
-    console.log(`📊 Tier hiện tại: ${user.vipTier}`);
+    console.log(`📊 Tier hiện tại: ${user.vip_tier}`);
 
     // Set VIP expire date (1 year from now for testing)
     const vipExpiresAt = new Date();
@@ -33,30 +33,30 @@ async function upgradeToVIP() {
     const updatedUser = await prisma.user.update({
       where: { email },
       data: {
-        vipTier: 'VIP',
-        vipExpiresAt
+        vip_tier: 'VIP',
+        vip_expires_at: vipExpiresAt
       }
     });
 
     // Reset usage stats
     await prisma.usageStats.deleteMany({
-      where: { userId: user.id }
+      where: { user_id: user.id }
     });
 
     await prisma.usageStats.create({
       data: {
-        userId: user.id,
-        tarotReadingsToday: 0,
-        chatMessagesToday: 0,
-        astrologyToday: 0,
-        fortuneToday: 0,
-        numerologyToday: 0,
-        lastResetDate: new Date()
+        user_id: user.id,
+        tarot_readings_today: 0,
+        chat_messages_today: 0,
+        astrology_today: 0,
+        fortune_today: 0,
+        numerology_today: 0,
+        last_reset_date: new Date()
       }
     });
 
     console.log('\n✅ Nâng cấp VIP thành công!');
-    console.log(`👑 Tier mới: ${updatedUser.vipTier}`);
+    console.log(`👑 Tier mới: ${updatedUser.vip_tier}`);
     console.log(`⏰ Hết hạn: ${vipExpiresAt.toLocaleString('vi-VN')}`);
     console.log(`🔄 Đã reset usage stats`);
     console.log('\n💎 Bạn có thể sử dụng tất cả tính năng không giới hạn!');
@@ -69,4 +69,3 @@ async function upgradeToVIP() {
 }
 
 upgradeToVIP();
-

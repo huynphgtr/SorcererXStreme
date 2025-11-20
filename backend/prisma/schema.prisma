@@ -1,98 +1,97 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+/// @map("users")
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  passwordHash  String
-  name          String?
-  birthDate     DateTime?
-  birthTime     String?
-  birthPlace    String?
-  createdAt     DateTime  @default(now())
-  vipTier       String    @default("FREE") // FREE, VIP, SORCERER
-  vipExpiresAt  DateTime?
-  partner       Partner?
-  breakups      Breakup[]
-  chatMessages  ChatMessage[]
-  tarotReadings TarotReading[]
-  subscriptions Subscription[]
-  usageStats    UsageStats?
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password_hash  String?
+  name           String?
+  is_vip         Boolean         @default(false)
+  birth_date     DateTime?
+  birth_time     String?
+  birth_place    String?
+  created_at     DateTime        @default(now())
+  vip_tier       String          @default("FREE")
+  vip_expires_at DateTime?
+  partners       Partner[]
+  personalEvents PersonalEvent[]
+  reminder       Reminder?
+  subscriptions  Subscription[]
+  usageStats     UsageStats?
 }
 
+/// @map("partners")
 model Partner {
-  id            String   @id @default(uuid())
-  userId        String   @unique
-  name          String
-  birthDate     DateTime
-  birthTime     String
-  birthPlace    String
-  relationship  String
-  startDate     DateTime
-  user          User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
+  user_id     String
+  name        String
+  birth_date  DateTime
+  birth_time  String
+  birth_place String
+  created_at  DateTime @default(now())
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@unique([id, user_id])
 }
 
-model Breakup {
-  id              String    @id @default(uuid())
-  userId          String
-  partnerName     String
-  breakupDate     DateTime
-  autoDeleteDate  DateTime
-  weeklyCheckDone String
-  user            User      @relation(fields: [userId], references: [id])
+/// @map("personal_events")
+model PersonalEvent {
+  id           String   @id @default(uuid())
+  user_id      String
+  partner_name String?
+  event_date   DateTime
+  event_type   String
+  details      String?
+  user         User     @relation(fields: [user_id], references: [id])
 }
 
-model ChatMessage {
+/// @map("reminders")
+model Reminder {
+  user_id       String    @id
+  is_subscribed Boolean   @default(true)
+  frequency     String    @default("daily")
+  last_sent     DateTime?
+  user          User      @relation(fields: [user_id], references: [id])
+}
+
+/// @map("token_blocklist")
+model TokenBlocklist {
   id        String   @id @default(uuid())
-  userId    String
-  content   String
-  role      String
-  type      String?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  jti       String   @unique
+  expiresAt DateTime
 }
 
-model TarotReading {
-  id            String   @id @default(uuid())
-  userId        String
-  question      String
-  cardsDrawn    String
-  interpretation String
-  createdAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id])
-}
-
+/// @map("subscriptions")
 model Subscription {
-  id            String   @id @default(uuid())
-  userId        String
-  tier          String   // FREE, VIP, SORCERER
-  price         Int
-  startDate     DateTime @default(now())
-  endDate       DateTime
-  status        String   @default("active") // active, expired, cancelled
-  paymentMethod String?
-  transactionId String?
-  createdAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id])
+  id             String   @id @default(uuid())
+  user_id        String
+  tier           String
+  price          Int
+  start_date     DateTime @default(now())
+  end_date       DateTime
+  status         String   @default("active")
+  payment_method String?
+  transaction_id String?
+  created_at     DateTime @default(now())
+  user           User     @relation(fields: [user_id], references: [id])
 }
 
+/// @map("usage_stats")
 model UsageStats {
-  id                  String   @id @default(uuid())
-  userId              String   @unique
-  tarotReadingsToday  Int      @default(0)
-  chatMessagesToday   Int      @default(0)
-  astrologyToday      Int      @default(0)
-  fortuneToday        Int      @default(0)
-  numerologyToday     Int      @default(0)
-  lastResetDate       DateTime @default(now())
-  user                User     @relation(fields: [userId], references: [id])
+  id                     String   @id @default(uuid())
+  user_id                String   @unique
+  tarot_readings_today   Int      @default(0)
+  chat_messages_today    Int      @default(0)
+  astrology_today        Int      @default(0)
+  fortune_today          Int      @default(0)
+  numerology_today       Int      @default(0)
+  last_reset_date        DateTime @default(now())
+  user                   User     @relation(fields: [user_id], references: [id])
 }

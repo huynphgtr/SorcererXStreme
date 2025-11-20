@@ -43,7 +43,7 @@ export async function getFortune(req: AuthRequest, res: Response): Promise<void>
 
     res.status(200).json({ analysis });
   } catch (error: any) {
-    console.error('❌ Fortune controller error:', error);
+    console.error('Fortune controller error:', error);
     const errorMessage = error.message || 'Internal server error';
     res.status(500).json({ 
       message: errorMessage,

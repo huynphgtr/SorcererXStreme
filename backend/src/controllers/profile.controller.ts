@@ -18,15 +18,34 @@ export async function getProfile(req: AuthRequest, res: Response): Promise<void>
         id: true,
         email: true,
         name: true,
-        birthDate: true,
-        birthTime: true,
-        birthPlace: true,
-        vipTier: true,
-        vipExpiresAt: true,
-        createdAt: true
+        birth_date: true,
+        birth_time: true,
+        birth_place: true,
+        vip_tier: true,
+        vip_expires_at: true,
+        created_at: true
       }
     });
-    res.status(200).json(user);
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Map snake_case to camelCase for frontend
+    const response = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      birthDate: user.birth_date,
+      birthTime: user.birth_time,
+      birthPlace: user.birth_place,
+      vipTier: user.vip_tier,
+      vipExpiresAt: user.vip_expires_at,
+      createdAt: user.created_at
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -48,25 +67,39 @@ export async function updateProfile(req: AuthRequest, res: Response): Promise<vo
       where: { id: userId },
       data: {
         name: data.name,
-        birthDate: new Date(data.birthDate),
-        birthTime: data.birthTime,
-        birthPlace: data.birthPlace,
+        birth_date: data.birthDate ? new Date(data.birthDate) : undefined,
+        birth_time: data.birthTime,
+        birth_place: data.birthPlace,
       },
       select: {
         id: true,
         email: true,
         name: true,
-        birthDate: true,
-        birthTime: true,
-        birthPlace: true,
-        vipTier: true,
-        vipExpiresAt: true,
-        createdAt: true
+        birth_date: true,
+        birth_time: true,
+        birth_place: true,
+        vip_tier: true,
+        vip_expires_at: true,
+        created_at: true
       }
     });
 
     console.log('Updated user:', user);
-    res.status(200).json(user);
+
+    // Map snake_case to camelCase for frontend
+    const response = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      birthDate: user.birth_date,
+      birthTime: user.birth_time,
+      birthPlace: user.birth_place,
+      vipTier: user.vip_tier,
+      vipExpiresAt: user.vip_expires_at,
+      createdAt: user.created_at
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

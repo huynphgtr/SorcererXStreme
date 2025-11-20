@@ -48,7 +48,7 @@ export async function getNumerology(req: AuthRequest, res: Response): Promise<vo
 
     res.status(200).json({ analysis });
   } catch (error: any) {
-    console.error('❌ Numerology controller error:', error);
+    console.error('Numerology controller error:', error);
     const errorMessage = error.message || 'Internal server error';
     res.status(500).json({ 
       message: errorMessage,

@@ -7,6 +7,7 @@ import { VIPService } from '../services/vip.service';
 
 export async function getAstrology(req: AuthRequest, res: Response): Promise<void> {
   try {
+    console.log('[Astrology] Request received');
     const userId = req.userId;
     if (!userId) {
       res.status(401).json({ message: 'Unauthorized' });
@@ -14,6 +15,7 @@ export async function getAstrology(req: AuthRequest, res: Response): Promise<voi
     }
 
     const { mode, birthDate, birthTime, birthPlace, userContext } = req.body;
+    console.log('[Astrology] Request data:', { mode, birthDate, birthTime, birthPlace, hasUserContext: !!userContext });
 
     const fullUserContext = {
       ...userContext,
@@ -23,12 +25,14 @@ export async function getAstrology(req: AuthRequest, res: Response): Promise<voi
     };
 
     let prompt = generateAstrologyPrompt(mode, fullUserContext);
+    console.log('[Astrology] Prompt generated, calling Gemini API...');
     
     if (fullUserContext?.isInBreakup) {
       prompt = addBreakupContextToPrompt(prompt, fullUserContext);
     }
     
     let analysis = await getAiResponse(prompt);
+    console.log('[Astrology] Got AI response, length:', analysis.length);
     
     if (fullUserContext?.isInBreakup) {
       const comfortingMsg = getComfortingMessage('astrology');
@@ -38,14 +42,16 @@ export async function getAstrology(req: AuthRequest, res: Response): Promise<voi
     // Increment usage counter (don't fail if this errors)
     try {
       await VIPService.incrementUsage(userId, 'astrology');
-    } catch (usageError) {
-      console.warn('Failed to increment usage counter:', usageError);
+    } catch (usageError: any) {
+      console.warn('Failed to increment usage counter:', usageError.message);
       // Continue anyway - don't fail the request
     }
 
+    console.log('[Astrology] Sending response to client');
     res.status(200).json({ analysis });
   } catch (error: any) {
-    console.error('❌ Astrology controller error:', error);
+    console.error('[Astrology] Controller error:', error);
+    console.error('[Astrology] Error stack:', error.stack);
     const errorMessage = error.message || 'Internal server error';
     res.status(500).json({ 
       message: errorMessage,
